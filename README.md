@@ -218,7 +218,6 @@ npx expo start
 
 ## Screenshots da Aplicação
 
-> Substitua as imagens abaixo com os prints da execução do aplicativo:
 
 | Tela de Login / Cadastro | Lista de Contatos Compatíveis | Chat 1-para-1 em Tempo Real |
 | :---: | :---: | :---: |
