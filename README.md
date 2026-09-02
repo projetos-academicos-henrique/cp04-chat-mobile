@@ -59,8 +59,8 @@ Conforme as diretrizes especificadas para o projeto:
 
 ## Tecnologias Utilizadas
 
-- **React Native** (0.83)
-- **Expo SDK 55**
+- **React Native** (0.81)
+- **Expo SDK 54**
 - **TypeScript** (Modo estrito, sem uso de `any`)
 - **React Navigation 7** (`@react-navigation/native-stack`)
 - **Firebase 12**:
