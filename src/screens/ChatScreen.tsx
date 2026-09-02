@@ -8,6 +8,7 @@ import {
   Platform,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { MessageSquare } from 'lucide-react-native';
 import { useAuth } from '../hooks/useAuth';
 import { useChat } from '../hooks/useChat';
 import type { RootStackParamList } from '../types/navigation';
@@ -50,7 +51,6 @@ export const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
     try {
       await sendTextMessage(textToSend);
     } catch {
-      // Caso ocorra falha, restaura o texto para que o usuário não perca a mensagem
       setInputText(textToSend);
     }
   }, [inputText, sending, sendTextMessage]);
@@ -108,6 +108,7 @@ export const ChatScreen: React.FC<Props> = ({ route, navigation }) => {
             ListEmptyComponent={
               <View style={styles.emptyContainer}>
                 <View style={styles.emptyBox}>
+                  <MessageSquare size={36} color="#ed145b" style={styles.emptyIcon} />
                   <Text style={styles.emptyTitle}>CONVERSA 1-PARA-1 INICIADA</Text>
                   <Text style={styles.emptyDescription}>
                     Você e {targetUser.name} estão conectados pelo Realtime Database.
@@ -164,6 +165,9 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
     width: '100%',
+  },
+  emptyIcon: {
+    marginBottom: 10,
   },
   emptyTitle: {
     color: '#ed145b',

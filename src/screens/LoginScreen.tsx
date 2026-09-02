@@ -11,6 +11,15 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  MessageSquare,
+  User as UserIcon,
+  Mail,
+  Lock,
+  Globe,
+  Apple as AppleIcon,
+  Info,
+} from 'lucide-react-native';
 import { useAuth } from '../hooks/useAuth';
 import { GradientBackground } from '../components/GradientBackground';
 import { ErrorMessage } from '../components/ErrorMessage';
@@ -90,6 +99,7 @@ export const LoginScreen: React.FC = () => {
             {/* Cabeçalho Visual */}
             <View style={styles.header}>
               <View style={styles.logoBadge}>
+                <MessageSquare size={16} color="#FFFFFF" style={styles.logoIcon} />
                 <Text style={styles.logoBadgeText}>CP4</Text>
               </View>
               <Text style={styles.title}>CHAT FIREBASE</Text>
@@ -135,7 +145,10 @@ export const LoginScreen: React.FC = () => {
 
               {isRegisterMode && (
                 <View style={styles.inputGroup}>
-                  <Text style={styles.label}>NOME COMPLETO</Text>
+                  <View style={styles.labelRow}>
+                    <UserIcon size={12} color="#ACC1CC" style={styles.labelIcon} />
+                    <Text style={styles.label}>NOME COMPLETO</Text>
+                  </View>
                   <TextInput
                     style={styles.input}
                     placeholder="Seu nome"
@@ -149,7 +162,10 @@ export const LoginScreen: React.FC = () => {
               )}
 
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>E-MAIL</Text>
+                <View style={styles.labelRow}>
+                  <Mail size={12} color="#ACC1CC" style={styles.labelIcon} />
+                  <Text style={styles.label}>E-MAIL</Text>
+                </View>
                 <TextInput
                   style={styles.input}
                   placeholder="exemplo@dominio.com"
@@ -163,7 +179,10 @@ export const LoginScreen: React.FC = () => {
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>SENHA</Text>
+                <View style={styles.labelRow}>
+                  <Lock size={12} color="#ACC1CC" style={styles.labelIcon} />
+                  <Text style={styles.label}>SENHA</Text>
+                </View>
                 <TextInput
                   style={styles.input}
                   placeholder="Mínimo 6 caracteres"
@@ -198,14 +217,14 @@ export const LoginScreen: React.FC = () => {
                 <View style={styles.dividerLine} />
               </View>
 
-              {/* Provedores Adicionais Obrigatórios */}
+              {/* Provedores Adicionais Obrigatórios com ícones Lucide */}
               <TouchableOpacity
                 style={styles.googleButton}
                 onPress={handleGoogleLogin}
                 disabled={loading}
                 activeOpacity={0.8}
               >
-                <Text style={styles.socialButtonIcon}>G</Text>
+                <Globe size={18} color="#ACC1CC" style={styles.socialButtonIcon} />
                 <Text style={styles.googleButtonText}>CONTINUAR COM GOOGLE</Text>
               </TouchableOpacity>
 
@@ -215,14 +234,17 @@ export const LoginScreen: React.FC = () => {
                 disabled={loading}
                 activeOpacity={0.8}
               >
-                <Text style={styles.socialButtonIcon}></Text>
+                <AppleIcon size={18} color="#FFFFFF" style={styles.socialButtonIcon} />
                 <Text style={styles.appleButtonText}>CONTINUAR COM APPLE</Text>
               </TouchableOpacity>
             </View>
 
             {/* Informação sobre a Regra de Comunicação */}
             <View style={styles.ruleInfoBox}>
-              <Text style={styles.ruleTitle}>REGRA DE COMUNICAÇÃO ENTRE PROVEDORES</Text>
+              <View style={styles.ruleHeaderRow}>
+                <Info size={15} color="#ed145b" style={styles.ruleHeaderIcon} />
+                <Text style={styles.ruleTitle}>REGRA DE COMUNICAÇÃO ENTRE PROVEDORES</Text>
+              </View>
               <Text style={styles.ruleText}>
                 • Contas com E-mail/Senha só podem conversar com contas Google ou Apple.
               </Text>
@@ -253,11 +275,16 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   logoBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#ed145b',
     paddingVertical: 4,
     paddingHorizontal: 12,
     borderRadius: 0,
     marginBottom: 8,
+  },
+  logoIcon: {
+    marginRight: 6,
   },
   logoBadgeText: {
     color: '#FFFFFF',
@@ -317,13 +344,20 @@ const styles = StyleSheet.create({
   inputGroup: {
     marginBottom: 14,
   },
+  labelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  labelIcon: {
+    marginRight: 6,
+  },
   label: {
     color: '#ACC1CC',
     fontFamily: 'Roboto',
     fontSize: 11,
     fontWeight: '700',
     letterSpacing: 0.8,
-    marginBottom: 6,
   },
   input: {
     height: 44,
@@ -410,9 +444,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   socialButtonIcon: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
     marginRight: 8,
   },
   ruleInfoBox: {
@@ -423,13 +454,20 @@ const styles = StyleSheet.create({
     borderColor: '#262c2f',
     borderRadius: 0,
   },
+  ruleHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  ruleHeaderIcon: {
+    marginRight: 6,
+  },
   ruleTitle: {
     color: '#ed145b',
     fontFamily: 'Roboto',
     fontSize: 11,
     fontWeight: '700',
     letterSpacing: 0.8,
-    marginBottom: 6,
   },
   ruleText: {
     color: '#B7B7B7',

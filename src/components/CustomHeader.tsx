@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ArrowLeft, LogOut } from 'lucide-react-native';
 
 interface Props {
   title: string;
@@ -23,7 +24,8 @@ export const CustomHeader: React.FC<Props> = ({
         <View style={styles.leftContainer}>
           {onBack && (
             <TouchableOpacity onPress={onBack} style={styles.backButton}>
-              <Text style={styles.backText}>◀ VOLTAR</Text>
+              <ArrowLeft size={14} color="#ACC1CC" style={styles.backIcon} />
+              <Text style={styles.backText}>VOLTAR</Text>
             </TouchableOpacity>
           )}
           <View style={styles.titleContainer}>
@@ -40,6 +42,9 @@ export const CustomHeader: React.FC<Props> = ({
 
         {rightActionText && onRightAction && (
           <TouchableOpacity onPress={onRightAction} style={styles.rightButton}>
+            {rightActionText.toUpperCase() === 'SAIR' && (
+              <LogOut size={13} color="#ed145b" style={styles.rightIcon} />
+            )}
             <Text style={styles.rightButtonText}>{rightActionText}</Text>
           </TouchableOpacity>
         )}
@@ -68,6 +73,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginRight: 12,
     paddingVertical: 6,
     paddingHorizontal: 10,
@@ -75,6 +82,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#343A3C',
     borderRadius: 0,
+  },
+  backIcon: {
+    marginRight: 4,
   },
   backText: {
     color: '#ACC1CC',
@@ -100,6 +110,8 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   rightButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 6,
     paddingHorizontal: 12,
     backgroundColor: '#200810',
@@ -107,6 +119,9 @@ const styles = StyleSheet.create({
     borderColor: '#ed145b',
     borderRadius: 0,
     marginLeft: 8,
+  },
+  rightIcon: {
+    marginRight: 6,
   },
   rightButtonText: {
     color: '#ed145b',

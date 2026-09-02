@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, RefreshControl } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
+import { User as UserIcon, Info, Users as UsersIcon } from 'lucide-react-native';
 import { useAuth } from '../hooks/useAuth';
 import { subscribeToUsers } from '../services/userService';
 import { canCommunicate, getProviderDisplayName, getProviderBadgeColor } from '../utils/chatRules';
@@ -62,7 +63,6 @@ export const UsersScreen: React.FC = () => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    // O próprio listener do Realtime Database mantém os dados sincronizados
     setTimeout(() => setRefreshing(false), 500);
   }, []);
 
@@ -82,7 +82,10 @@ export const UsersScreen: React.FC = () => {
       {currentUser && (
         <View style={styles.profileBar}>
           <View style={styles.profileInfo}>
-            <Text style={styles.profileLabel}>CONECTADO COMO</Text>
+            <View style={styles.profileLabelRow}>
+              <UserIcon size={12} color="#ed145b" style={styles.profileLabelIcon} />
+              <Text style={styles.profileLabel}>CONECTADO COMO</Text>
+            </View>
             <Text style={styles.profileName} numberOfLines={1}>
               {currentUser.name}
             </Text>
@@ -102,6 +105,7 @@ export const UsersScreen: React.FC = () => {
 
       {/* Regra de comunicação ativa */}
       <View style={styles.ruleBanner}>
+        <Info size={14} color="#ACC1CC" style={styles.ruleBannerIcon} />
         <Text style={styles.ruleBannerText}>
           {currentUser?.provider === 'password'
             ? 'Você está autenticado com E-mail. Só pode conversar com usuários Google ou Apple.'
@@ -135,6 +139,7 @@ export const UsersScreen: React.FC = () => {
             ListEmptyComponent={
               <View style={styles.emptyContainer}>
                 <View style={styles.emptyBox}>
+                  <UsersIcon size={36} color="#ed145b" style={styles.emptyIcon} />
                   <Text style={styles.emptyTitle}>NENHUM CONTATO COMPATÍVEL</Text>
                   <Text style={styles.emptyDescription}>
                     Não há outros usuários disponíveis para conversa com as regras atuais do seu provedor.
@@ -173,6 +178,13 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 10,
   },
+  profileLabelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  profileLabelIcon: {
+    marginRight: 4,
+  },
   profileLabel: {
     color: '#ed145b',
     fontFamily: 'Roboto',
@@ -207,13 +219,19 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   ruleBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#1c171a',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#341d26',
   },
+  ruleBannerIcon: {
+    marginRight: 8,
+  },
   ruleBannerText: {
+    flex: 1,
     color: '#ACC1CC',
     fontFamily: 'Roboto',
     fontSize: 11,
@@ -234,6 +252,9 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
     width: '100%',
+  },
+  emptyIcon: {
+    marginBottom: 10,
   },
   emptyTitle: {
     color: '#ed145b',

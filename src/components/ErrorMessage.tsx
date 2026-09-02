@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { AlertCircle, X } from 'lucide-react-native';
 
 interface Props {
   message: string;
@@ -11,13 +12,14 @@ export const ErrorMessage: React.FC<Props> = ({ message, onDismiss }) => {
 
   return (
     <View style={styles.container}>
+      <AlertCircle size={18} color="#ed145b" style={styles.alertIcon} />
       <View style={styles.textContainer}>
         <Text style={styles.title}>ATENÇÃO</Text>
         <Text style={styles.message}>{message}</Text>
       </View>
       {onDismiss && (
         <TouchableOpacity onPress={onDismiss} style={styles.dismissButton}>
-          <Text style={styles.dismissText}>✕</Text>
+          <X size={16} color="#ACC1CC" />
         </TouchableOpacity>
       )}
     </View>
@@ -40,6 +42,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  alertIcon: {
+    marginRight: 10,
+  },
   textContainer: {
     flex: 1,
   },
@@ -58,13 +63,8 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   dismissButton: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 6,
     paddingVertical: 4,
     borderRadius: 0,
-  },
-  dismissText: {
-    color: '#ACC1CC',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
 });

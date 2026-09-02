@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { Send } from 'lucide-react-native';
 
 interface Props {
   value: string;
@@ -36,7 +37,10 @@ export const ChatInput: React.FC<Props> = memo(
           {sending ? (
             <ActivityIndicator size="small" color="#FFFFFF" />
           ) : (
-            <Text style={styles.sendButtonText}>ENVIAR</Text>
+            <>
+              <Send size={15} color="#FFFFFF" style={styles.sendIcon} />
+              <Text style={styles.sendButtonText}>ENVIAR</Text>
+            </>
           )}
         </TouchableOpacity>
       </View>
@@ -60,7 +64,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#191e20',
     borderWidth: 1,
     borderColor: '#ACC1CC',
-    borderRadius: 0, // Regra obrigatória: sem bordas arredondadas
+    borderRadius: 0,
     paddingHorizontal: 12,
     color: '#FFFFFF',
     fontFamily: 'Roboto',
@@ -69,13 +73,17 @@ const styles = StyleSheet.create({
   },
   sendButton: {
     height: 44,
-    paddingHorizontal: 18,
+    paddingHorizontal: 16,
     backgroundColor: '#ed145b',
-    borderRadius: 0, // Regra obrigatória: sem bordas arredondadas
+    borderRadius: 0,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#ff3375',
+  },
+  sendIcon: {
+    marginRight: 6,
   },
   sendButtonDisabled: {
     backgroundColor: '#401524',

@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import type { ChatUser } from '../types/user';
+import { Mail, Globe, Apple, ChevronRight } from 'lucide-react-native';
+import type { ChatUser, AuthProvider } from '../types/user';
 import { getInitials } from '../utils/formatters';
 import { getProviderBadgeColor, getProviderDisplayName } from '../utils/chatRules';
 
@@ -8,6 +9,19 @@ interface Props {
   user: ChatUser;
   onPress: (user: ChatUser) => void;
 }
+
+const ProviderIcon: React.FC<{ provider: AuthProvider; color: string }> = ({ provider, color }) => {
+  switch (provider) {
+    case 'password':
+      return <Mail size={12} color={color} style={styles.badgeIcon} />;
+    case 'google':
+      return <Globe size={12} color={color} style={styles.badgeIcon} />;
+    case 'apple':
+      return <Apple size={12} color={color} style={styles.badgeIcon} />;
+    default:
+      return null;
+  }
+};
 
 export const UserItem: React.FC<Props> = memo(({ user, onPress }) => {
   const badgeColor = getProviderBadgeColor(user.provider);
@@ -36,8 +50,11 @@ export const UserItem: React.FC<Props> = memo(({ user, onPress }) => {
       </View>
 
       <View style={[styles.badge, { borderColor: badgeColor }]}>
+        <ProviderIcon provider={user.provider} color={badgeColor} />
         <Text style={[styles.badgeText, { color: badgeColor }]}>{providerLabel}</Text>
       </View>
+
+      <ChevronRight size={18} color="#455057" style={styles.chevron} />
     </TouchableOpacity>
   );
 });
@@ -88,11 +105,16 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   badge: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 4,
     paddingHorizontal: 8,
     borderWidth: 1,
     borderRadius: 0,
     backgroundColor: '#0d1011',
+  },
+  badgeIcon: {
+    marginRight: 5,
   },
   badgeText: {
     fontFamily: 'Roboto',
@@ -100,5 +122,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: 0.5,
     textTransform: 'uppercase',
+  },
+  chevron: {
+    marginLeft: 8,
   },
 });
