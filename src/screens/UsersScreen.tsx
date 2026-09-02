@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, RefreshControl } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
-import { User as UserIcon, Info, Users as UsersIcon } from 'lucide-react-native';
+import { User as UserIcon, Info, Users as UsersIcon, AlertTriangle } from 'lucide-react-native';
 import { useAuth } from '../hooks/useAuth';
 import { subscribeToUsers } from '../services/userService';
 import { canCommunicate, getProviderDisplayName, getProviderBadgeColor } from '../utils/chatRules';
@@ -24,15 +24,29 @@ export const UsersScreen: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [rtdbWarning, setRtdbWarning] = useState<string | null>(null);
 
   // Ouve usuários cadastrados em tempo real no Realtime Database com limpeza de listener
   useEffect(() => {
     setLoading(true);
-    const unsubscribe = subscribeToUsers((usersList) => {
-      setAllUsers(usersList);
-      setLoading(false);
-      setRefreshing(false);
-    });
+    setRtdbWarning(null);
+
+    const unsubscribe = subscribeToUsers(
+      (usersList) => {
+        setAllUsers(usersList);
+        setLoading(false);
+        setRefreshing(false);
+        setRtdbWarning(null);
+      },
+      (err) => {
+        console.warn('Falha no Realtime Database:', err);
+        setLoading(false);
+        setRefreshing(false);
+        setRtdbWarning(
+          'Não foi possível conectar ao Realtime Database. Verifique se o banco foi criado no Firebase Console e se a databaseURL no firebase.ts corresponde exatamente à URL da aba Dados.'
+        );
+      }
+    );
 
     return () => {
       unsubscribe();
@@ -63,7 +77,7 @@ export const UsersScreen: React.FC = () => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 500);
+    setTimeout(() => setRefreshing(false), 600);
   }, []);
 
   const userProviderLabel = currentUser ? getProviderDisplayName(currentUser.provider) : '';
@@ -112,6 +126,14 @@ export const UsersScreen: React.FC = () => {
             : 'Você está autenticado com Google/Apple. Só pode conversar com usuários de E-mail.'}
         </Text>
       </View>
+
+      {/* Aviso caso o Realtime Database precise ser criado no Console */}
+      {rtdbWarning && (
+        <View style={styles.warningCard}>
+          <AlertTriangle size={18} color="#f59e0b" style={styles.warningIcon} />
+          <Text style={styles.warningText}>{rtdbWarning}</Text>
+        </View>
+      )}
 
       <View style={styles.container}>
         {(error || authError) && (
@@ -236,6 +258,26 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
     fontSize: 11,
     lineHeight: 16,
+  },
+  warningCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#261b0c',
+    borderWidth: 1,
+    borderColor: '#78350f',
+    padding: 12,
+    marginHorizontal: 16,
+    marginTop: 12,
+  },
+  warningIcon: {
+    marginRight: 10,
+  },
+  warningText: {
+    flex: 1,
+    color: '#fbbf24',
+    fontFamily: 'Roboto',
+    fontSize: 12,
+    lineHeight: 17,
   },
   listContent: {
     paddingVertical: 16,

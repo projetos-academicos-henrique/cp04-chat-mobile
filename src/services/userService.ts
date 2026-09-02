@@ -9,31 +9,54 @@ interface UserRecord {
 }
 
 export async function syncUserProfile(user: ChatUser): Promise<void> {
-  const userRef = ref(db, `users/${user.uid}`);
-  const record: UserRecord = {
-    name: user.name,
-    email: user.email,
-    provider: user.provider,
-  };
-  await set(userRef, record);
-}
-
-export async function getUserProfile(uid: string): Promise<ChatUser | null> {
-  const userRef = ref(db, `users/${uid}`);
-  const snapshot = await get(userRef);
-  if (!snapshot.exists()) {
-    return null;
+  try {
+    const userRef = ref(db, `users/${user.uid}`);
+    const record: UserRecord = {
+      name: user.name,
+      email: user.email,
+      provider: user.provider,
+    };
+    await set(userRef, record);
+  } catch (err) {
+    console.warn('Aviso ao sincronizar perfil no Realtime Database:', err);
   }
-  const data = snapshot.val() as UserRecord;
-  return {
-    uid,
-    name: data.name || 'Usuário',
-    email: data.email || null,
-    provider: data.provider,
-  };
 }
 
-export function subscribeToUsers(callback: (users: ChatUser[]) => void): () => void {
+export async function getUserProfile(
+  uid: string,
+  timeoutMs: number = 2500
+): Promise<ChatUser | null> {
+  const userRef = ref(db, `users/${uid}`);
+
+  const fetchPromise = get(userRef)
+    .then((snapshot) => {
+      if (!snapshot.exists()) {
+        return null;
+      }
+      const data = snapshot.val() as UserRecord;
+      return {
+        uid,
+        name: data.name || 'Usuário',
+        email: data.email || null,
+        provider: data.provider,
+      };
+    })
+    .catch((err) => {
+      console.warn('Aviso ao consultar perfil no Realtime Database:', err);
+      return null;
+    });
+
+  const timeoutPromise = new Promise<null>((resolve) => {
+    setTimeout(() => resolve(null), timeoutMs);
+  });
+
+  return Promise.race([fetchPromise, timeoutPromise]);
+}
+
+export function subscribeToUsers(
+  callback: (users: ChatUser[]) => void,
+  onError?: (error: Error) => void
+): () => void {
   const usersRef = ref(db, 'users');
 
   const listener = (snapshot: DataSnapshot) => {
@@ -53,7 +76,16 @@ export function subscribeToUsers(callback: (users: ChatUser[]) => void): () => v
     callback(userList);
   };
 
-  onValue(usersRef, listener);
+  const errorListener = (err: Error) => {
+    console.warn('Erro ao escutar usuários no Realtime Database:', err);
+    if (onError) {
+      onError(err);
+    } else {
+      callback([]);
+    }
+  };
+
+  onValue(usersRef, listener, errorListener);
 
   return () => {
     off(usersRef, 'value', listener);

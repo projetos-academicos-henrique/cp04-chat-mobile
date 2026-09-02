@@ -10,7 +10,7 @@ import {
   logout as authLogout,
   getFriendlyAuthErrorMessage,
 } from '../services/authService';
-import type { ChatUser } from '../types/user';
+import type { ChatUser, AuthProvider as AuthProviderType } from '../types/user';
 
 export interface AuthContextData {
   currentUser: ChatUser | null;
@@ -44,19 +44,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: User | null) => {
       try {
         if (firebaseUser) {
-          const profile = await getUserProfile(firebaseUser.uid);
+          // Identifica o provedor a partir dos dados retornados pelo Firebase Auth
+          let detectedProvider: AuthProviderType = 'password';
+          const providerId = firebaseUser.providerData?.[0]?.providerId;
+          if (providerId === 'google.com') {
+            detectedProvider = 'google';
+          } else if (providerId === 'apple.com') {
+            detectedProvider = 'apple';
+          }
+
+          const profile = await getUserProfile(firebaseUser.uid, 2000);
           if (profile) {
             setCurrentUser(profile);
           } else {
-            // Se ainda não existir no Realtime Database, inicializa
-            const newUser: ChatUser = {
+            const fallbackUser: ChatUser = {
               uid: firebaseUser.uid,
-              name: firebaseUser.displayName || 'Usuário',
+              name: firebaseUser.displayName || (detectedProvider === 'google' ? 'Usuário Google' : 'Usuário'),
               email: firebaseUser.email,
-              provider: 'password',
+              provider: detectedProvider,
             };
-            await syncUserProfile(newUser);
-            setCurrentUser(newUser);
+            syncUserProfile(fallbackUser).catch(() => {});
+            setCurrentUser(fallbackUser);
           }
         } else {
           setCurrentUser(null);
