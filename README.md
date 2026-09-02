@@ -222,7 +222,7 @@ npx expo start
 
 | Tela de Login / Cadastro | Lista de Contatos Compatíveis | Chat 1-para-1 em Tempo Real |
 | :---: | :---: | :---: |
-| ![Login](https://via.placeholder.com/250x500/121517/ed145b?text=Login+Screen) | ![Contatos](https://via.placeholder.com/250x500/121517/ACC1CC?text=Users+Screen) | ![Chat](https://via.placeholder.com/250x500/121517/ed145b?text=Chat+Screen) |
+| ![Login](assets/docs/01_login.jpeg) | ![Contatos](assets/docs/02_lista_contatos.jpeg) | ![Chat](assets/docs/03_chat.jpeg) |
 
 ---
 
