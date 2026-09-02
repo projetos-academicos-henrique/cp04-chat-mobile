@@ -59,7 +59,7 @@ export const LoginScreen: React.FC = () => {
         await login(email, password);
       }
     } catch {
-      // Erro já tratado e definido no contexto
+      // Erro gerenciado no contexto
     }
   }, [isRegisterMode, name, email, password, register, login, clearError]);
 
@@ -89,51 +89,30 @@ export const LoginScreen: React.FC = () => {
     <GradientBackground>
       <SafeAreaView style={styles.safeArea}>
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.container}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={styles.keyboardView}
         >
           <ScrollView
             contentContainerStyle={styles.scrollContent}
             keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
           >
-            {/* Cabeçalho Visual */}
-            <View style={styles.header}>
-              <View style={styles.logoBadge}>
-                <MessageSquare size={16} color="#FFFFFF" style={styles.logoIcon} />
-                <Text style={styles.logoBadgeText}>CP4</Text>
+            {/* Bloco Central Superior estilo App Mobile (Instagram / Threads) */}
+            <View style={styles.topSection}>
+              <View style={styles.logoContainer}>
+                <View style={styles.logoBadge}>
+                  <MessageSquare size={22} color="#FFFFFF" />
+                </View>
+                <Text style={styles.brandTitle}>CP4 CHAT</Text>
               </View>
-              <Text style={styles.title}>CHAT FIREBASE</Text>
-              <Text style={styles.subtitle}>
-                Autenticação + Realtime Database 1-para-1
+              <Text style={styles.brandSubtitle}>
+                {isRegisterMode ? 'Crie sua conta para começar' : 'Conecte-se para conversar em tempo real'}
               </Text>
             </View>
 
-            {/* Caixa de Formulário */}
-            <View style={styles.formCard}>
-              <View style={styles.modeTabs}>
-                <TouchableOpacity
-                  style={[styles.tabButton, !isRegisterMode && styles.tabButtonActive]}
-                  onPress={() => isRegisterMode && toggleMode()}
-                >
-                  <Text
-                    style={[styles.tabButtonText, !isRegisterMode && styles.tabButtonTextActive]}
-                  >
-                    ENTRAR
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.tabButton, isRegisterMode && styles.tabButtonActive]}
-                  onPress={() => !isRegisterMode && toggleMode()}
-                >
-                  <Text
-                    style={[styles.tabButtonText, isRegisterMode && styles.tabButtonTextActive]}
-                  >
-                    CADASTRAR
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              {displayedError && (
+            {/* Mensagens de Erro */}
+            {displayedError && (
+              <View style={styles.errorContainer}>
                 <ErrorMessage
                   message={displayedError}
                   onDismiss={() => {
@@ -141,17 +120,17 @@ export const LoginScreen: React.FC = () => {
                     clearError();
                   }}
                 />
-              )}
+              </View>
+            )}
 
+            {/* Formulário Direto na Tela (Sem caixa/card fechado) */}
+            <View style={styles.formSection}>
               {isRegisterMode && (
-                <View style={styles.inputGroup}>
-                  <View style={styles.labelRow}>
-                    <UserIcon size={12} color="#ACC1CC" style={styles.labelIcon} />
-                    <Text style={styles.label}>NOME COMPLETO</Text>
-                  </View>
+                <View style={styles.inputWrapper}>
+                  <UserIcon size={16} color="#ACC1CC" style={styles.inputIcon} />
                   <TextInput
                     style={styles.input}
-                    placeholder="Seu nome"
+                    placeholder="Nome completo"
                     placeholderTextColor="#6a757b"
                     value={name}
                     onChangeText={setName}
@@ -161,14 +140,11 @@ export const LoginScreen: React.FC = () => {
                 </View>
               )}
 
-              <View style={styles.inputGroup}>
-                <View style={styles.labelRow}>
-                  <Mail size={12} color="#ACC1CC" style={styles.labelIcon} />
-                  <Text style={styles.label}>E-MAIL</Text>
-                </View>
+              <View style={styles.inputWrapper}>
+                <Mail size={16} color="#ACC1CC" style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
-                  placeholder="exemplo@dominio.com"
+                  placeholder="E-mail"
                   placeholderTextColor="#6a757b"
                   value={email}
                   onChangeText={setEmail}
@@ -178,14 +154,11 @@ export const LoginScreen: React.FC = () => {
                 />
               </View>
 
-              <View style={styles.inputGroup}>
-                <View style={styles.labelRow}>
-                  <Lock size={12} color="#ACC1CC" style={styles.labelIcon} />
-                  <Text style={styles.label}>SENHA</Text>
-                </View>
+              <View style={styles.inputWrapper}>
+                <Lock size={16} color="#ACC1CC" style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
-                  placeholder="Mínimo 6 caracteres"
+                  placeholder="Senha (mínimo 6 caracteres)"
                   placeholderTextColor="#6a757b"
                   value={password}
                   onChangeText={setPassword}
@@ -195,64 +168,73 @@ export const LoginScreen: React.FC = () => {
                 />
               </View>
 
-              {/* Botão de Envio Principal */}
+              {/* Botão de Ação Primário Full Width */}
               <TouchableOpacity
-                style={[styles.submitButton, loading && styles.submitButtonDisabled]}
+                style={[styles.primaryButton, loading && styles.buttonDisabled]}
                 onPress={handleSubmit}
                 disabled={loading}
                 activeOpacity={0.8}
               >
                 {loading ? (
-                  <ActivityIndicator color="#FFFFFF" />
+                  <ActivityIndicator color="#FFFFFF" size="small" />
                 ) : (
-                  <Text style={styles.submitButtonText}>
-                    {isRegisterMode ? 'CRIAR CONTA (E-MAIL)' : 'ENTRAR COM E-MAIL'}
+                  <Text style={styles.primaryButtonText}>
+                    {isRegisterMode ? 'CADASTRAR' : 'ENTRAR'}
                   </Text>
                 )}
               </TouchableOpacity>
 
+              {/* Divisor "OU" */}
               <View style={styles.divider}>
                 <View style={styles.dividerLine} />
-                <Text style={styles.dividerText}>OU CONECTE COM</Text>
+                <Text style={styles.dividerText}>OU</Text>
                 <View style={styles.dividerLine} />
               </View>
 
-              {/* Provedores Adicionais Obrigatórios com ícones Lucide */}
+              {/* Botões de Acesso Rápido / Provedores Sociais */}
               <TouchableOpacity
-                style={styles.googleButton}
+                style={styles.socialButton}
                 onPress={handleGoogleLogin}
                 disabled={loading}
                 activeOpacity={0.8}
               >
-                <Globe size={18} color="#ACC1CC" style={styles.socialButtonIcon} />
-                <Text style={styles.googleButtonText}>CONTINUAR COM GOOGLE</Text>
+                <Globe size={18} color="#ACC1CC" style={styles.socialIcon} />
+                <Text style={styles.socialButtonText}>Continuar com o Google</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.appleButton}
+                style={[styles.socialButton, styles.appleButton]}
                 onPress={handleAppleLogin}
                 disabled={loading}
                 activeOpacity={0.8}
               >
-                <AppleIcon size={18} color="#FFFFFF" style={styles.socialButtonIcon} />
-                <Text style={styles.appleButtonText}>CONTINUAR COM APPLE</Text>
+                <AppleIcon size={18} color="#FFFFFF" style={styles.socialIcon} />
+                <Text style={[styles.socialButtonText, styles.appleButtonText]}>
+                  Continuar com a Apple
+                </Text>
               </TouchableOpacity>
             </View>
 
-            {/* Informação sobre a Regra de Comunicação */}
-            <View style={styles.ruleInfoBox}>
-              <View style={styles.ruleHeaderRow}>
-                <Info size={15} color="#ed145b" style={styles.ruleHeaderIcon} />
-                <Text style={styles.ruleTitle}>REGRA DE COMUNICAÇÃO ENTRE PROVEDORES</Text>
-              </View>
-              <Text style={styles.ruleText}>
-                • Contas com E-mail/Senha só podem conversar com contas Google ou Apple.
-              </Text>
-              <Text style={styles.ruleText}>
-                • Contas Google ou Apple só podem conversar com contas E-mail/Senha.
+            {/* Aviso Sutil da Regra de Provedores */}
+            <View style={styles.ruleNotice}>
+              <Info size={14} color="#ed145b" style={styles.ruleNoticeIcon} />
+              <Text style={styles.ruleNoticeText}>
+                Regra CP4: Usuários de E-mail conversam exclusivamente com Google/Apple e vice-versa.
               </Text>
             </View>
           </ScrollView>
+
+          {/* Rodapé Estilo Instagram ancorado na base */}
+          <View style={styles.footerBar}>
+            <Text style={styles.footerText}>
+              {isRegisterMode ? 'Já tem uma conta? ' : 'Não tem uma conta? '}
+            </Text>
+            <TouchableOpacity onPress={toggleMode} activeOpacity={0.7}>
+              <Text style={styles.footerActionText}>
+                {isRegisterMode ? 'Conecte-se' : 'Cadastre-se'}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </GradientBackground>
@@ -263,217 +245,173 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
-  container: {
+  keyboardView: {
     flex: 1,
+    justifyContent: 'space-between',
   },
   scrollContent: {
-    paddingHorizontal: 20,
-    paddingVertical: 24,
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 28,
+    paddingVertical: 32,
   },
-  header: {
+  topSection: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 32,
   },
-  logoBadge: {
+  logoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ed145b',
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    borderRadius: 0,
     marginBottom: 8,
   },
-  logoIcon: {
-    marginRight: 6,
+  logoBadge: {
+    backgroundColor: '#ed145b',
+    padding: 8,
+    borderRadius: 0, // Sem bordas arredondadas
+    marginRight: 10,
   },
-  logoBadgeText: {
+  brandTitle: {
     color: '#FFFFFF',
     fontFamily: 'Roboto',
-    fontSize: 12,
+    fontSize: 28,
     fontWeight: '900',
-    letterSpacing: 1.5,
+    letterSpacing: 2,
   },
-  title: {
-    color: '#FFFFFF',
-    fontFamily: 'Roboto',
-    fontSize: 24,
-    fontWeight: '900',
-    letterSpacing: 1,
-  },
-  subtitle: {
+  brandSubtitle: {
     color: '#B7B7B7',
     fontFamily: 'Roboto',
     fontSize: 13,
     marginTop: 4,
     textAlign: 'center',
   },
-  formCard: {
-    backgroundColor: '#131618',
-    borderWidth: 1,
-    borderColor: '#292f32',
-    borderRadius: 0,
-    padding: 18,
+  errorContainer: {
+    marginBottom: 16,
   },
-  modeTabs: {
+  formSection: {
+    width: '100%',
+  },
+  inputWrapper: {
     flexDirection: 'row',
-    marginBottom: 18,
-  },
-  tabButton: {
-    flex: 1,
-    paddingVertical: 10,
     alignItems: 'center',
-    backgroundColor: '#1b2023',
+    height: 50,
+    backgroundColor: '#14181a',
     borderWidth: 1,
-    borderColor: '#292f32',
-    borderRadius: 0,
-  },
-  tabButtonActive: {
-    backgroundColor: '#2b101b',
-    borderColor: '#ed145b',
-  },
-  tabButtonText: {
-    color: '#B7B7B7',
-    fontFamily: 'Roboto',
-    fontSize: 12,
-    fontWeight: '700',
-    letterSpacing: 0.8,
-  },
-  tabButtonTextActive: {
-    color: '#ed145b',
-  },
-  inputGroup: {
+    borderColor: '#262d31',
+    borderRadius: 0, // Sem bordas arredondadas
+    paddingHorizontal: 14,
     marginBottom: 14,
   },
-  labelRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  labelIcon: {
-    marginRight: 6,
-  },
-  label: {
-    color: '#ACC1CC',
-    fontFamily: 'Roboto',
-    fontSize: 11,
-    fontWeight: '700',
-    letterSpacing: 0.8,
+  inputIcon: {
+    marginRight: 10,
   },
   input: {
-    height: 44,
-    backgroundColor: '#0c0e0f',
-    borderWidth: 1,
-    borderColor: '#343A3C',
-    borderRadius: 0,
-    paddingHorizontal: 12,
+    flex: 1,
+    height: '100%',
     color: '#FFFFFF',
     fontFamily: 'Roboto',
     fontSize: 14,
   },
-  submitButton: {
-    height: 46,
+  primaryButton: {
+    height: 48,
     backgroundColor: '#ed145b',
-    borderRadius: 0,
+    borderRadius: 0, // Sem bordas arredondadas
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: 6,
     borderWidth: 1,
-    borderColor: '#ff3074',
+    borderColor: '#ff2d72',
   },
-  submitButtonDisabled: {
+  buttonDisabled: {
     opacity: 0.6,
   },
-  submitButtonText: {
+  primaryButtonText: {
     color: '#FFFFFF',
     fontFamily: 'Roboto',
     fontSize: 13,
     fontWeight: '700',
-    letterSpacing: 0.8,
+    letterSpacing: 1.2,
   },
   divider: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 18,
+    marginVertical: 24,
   },
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#262c2f',
+    backgroundColor: '#262c30',
   },
   dividerText: {
-    color: '#6e7a82',
-    fontFamily: 'Roboto',
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 0.8,
-    marginHorizontal: 10,
-  },
-  googleButton: {
-    height: 44,
-    backgroundColor: '#1b2226',
-    borderWidth: 1,
-    borderColor: '#ACC1CC',
-    borderRadius: 0,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  googleButtonText: {
-    color: '#ACC1CC',
-    fontFamily: 'Roboto',
-    fontSize: 12,
-    fontWeight: '700',
-    letterSpacing: 0.5,
-  },
-  appleButton: {
-    height: 44,
-    backgroundColor: '#111314',
-    borderWidth: 1,
-    borderColor: '#555f65',
-    borderRadius: 0,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  appleButtonText: {
-    color: '#FFFFFF',
-    fontFamily: 'Roboto',
-    fontSize: 12,
-    fontWeight: '700',
-    letterSpacing: 0.5,
-  },
-  socialButtonIcon: {
-    marginRight: 8,
-  },
-  ruleInfoBox: {
-    marginTop: 20,
-    padding: 14,
-    backgroundColor: '#0f1214',
-    borderWidth: 1,
-    borderColor: '#262c2f',
-    borderRadius: 0,
-  },
-  ruleHeaderRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  ruleHeaderIcon: {
-    marginRight: 6,
-  },
-  ruleTitle: {
-    color: '#ed145b',
+    color: '#717d84',
     fontFamily: 'Roboto',
     fontSize: 11,
     fontWeight: '700',
-    letterSpacing: 0.8,
+    letterSpacing: 1,
+    marginHorizontal: 14,
   },
-  ruleText: {
+  socialButton: {
+    height: 46,
+    backgroundColor: '#171c1f',
+    borderWidth: 1,
+    borderColor: '#30383d',
+    borderRadius: 0, // Sem bordas arredondadas
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  socialIcon: {
+    marginRight: 10,
+  },
+  socialButtonText: {
+    color: '#ACC1CC',
+    fontFamily: 'Roboto',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  appleButton: {
+    backgroundColor: '#0c0e0f',
+    borderColor: '#333b40',
+  },
+  appleButtonText: {
+    color: '#FFFFFF',
+  },
+  ruleNotice: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 18,
+    paddingHorizontal: 8,
+  },
+  ruleNoticeIcon: {
+    marginRight: 6,
+  },
+  ruleNoticeText: {
+    color: '#8e9aa1',
+    fontFamily: 'Roboto',
+    fontSize: 11,
+    lineHeight: 16,
+    textAlign: 'center',
+    flexShrink: 1,
+  },
+  footerBar: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 18,
+    borderTopWidth: 1,
+    borderTopColor: '#22282b',
+    backgroundColor: '#0c0e0f',
+  },
+  footerText: {
     color: '#B7B7B7',
     fontFamily: 'Roboto',
-    fontSize: 12,
-    lineHeight: 18,
-    marginBottom: 4,
+    fontSize: 13,
+  },
+  footerActionText: {
+    color: '#ed145b',
+    fontFamily: 'Roboto',
+    fontSize: 13,
+    fontWeight: '700',
   },
 });
