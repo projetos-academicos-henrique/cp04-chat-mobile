@@ -4,10 +4,12 @@ import {
   signOut,
   updateProfile,
   signInWithCredential,
+  signInWithPopup,
   GoogleAuthProvider,
   OAuthProvider,
   User,
 } from 'firebase/auth';
+import { Platform } from 'react-native';
 import { auth } from './firebase';
 import { syncUserProfile, getUserProfile } from './userService';
 import type { ChatUser } from '../types/user';
@@ -32,9 +34,15 @@ export function getFriendlyAuthErrorMessage(error: unknown): string {
       case 'auth/network-request-failed':
         return 'Falha de conexão com a internet. Verifique sua rede.';
       case 'auth/operation-not-allowed':
-        return 'Este método de autenticação não está ativado no Firebase Console.';
+        return 'Este provedor não está ativado no Firebase Console (Authentication > Sign-in method). Ative o provedor correspondente para continuar.';
+      case 'auth/popup-closed-by-user':
+        return 'O pop-up de login foi fechado antes de concluir.';
+      case 'auth/popup-blocked':
+        return 'O navegador bloqueou o pop-up de login. Permita pop-ups para este site.';
+      case 'auth/unauthorized-domain':
+        return 'Domínio não autorizado no Firebase Console. Adicione "localhost" em Authentication > Settings > Authorized domains.';
       default:
-        return `Erro de autenticação (${code}). Tente novamente.`;
+        return `Erro de autenticação (${code}). Verifique o console.`;
     }
   }
 
@@ -102,8 +110,9 @@ export async function loginWithEmail(email: string, pass: string): Promise<ChatU
 
 /**
  * Autenticação com Google:
- * Suporta passagem de idToken (quando integrado com Google Sign-In nativo)
- * ou fluxo de simulação do provedor Google para testes/avaliação.
+ * 1. Suporta passagem de idToken explícito (autenticação nativa)
+ * 2. No navegador (Web), abre o popup oficial da conta Google via signInWithPopup
+ * 3. No mobile/emulador sem credenciais GCP, executa fallback simulado
  */
 export async function signInWithGoogle(options?: {
   idToken?: string;
@@ -126,7 +135,25 @@ export async function signInWithGoogle(options?: {
     return chatUser;
   }
 
-  // Modo de login simulado do provedor Google (para avaliação sem credenciais GCP configuradas)
+  // Fluxo oficial Web com popup
+  if (Platform.OS === 'web') {
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    const userCredential = await signInWithPopup(auth, provider);
+    const user = userCredential.user;
+
+    const chatUser: ChatUser = {
+      uid: user.uid,
+      name: user.displayName || 'Usuário Google',
+      email: user.email,
+      provider: 'google',
+    };
+
+    await syncUserProfile(chatUser);
+    return chatUser;
+  }
+
+  // Modo de fallback para ambiente mobile/emulador
   const syntheticEmail = options?.email || `google.user.${Date.now().toString().slice(-4)}@gmail.com`;
   const syntheticName = options?.name || 'Usuário Google';
   const syntheticPass = 'GoogleDevPass@2026';
@@ -164,8 +191,9 @@ export async function signInWithGoogle(options?: {
 
 /**
  * Autenticação com Apple:
- * Suporta passagem de identityToken (quando integrado com Apple Authentication nativo)
- * ou fluxo de simulação do provedor Apple para testes/avaliação.
+ * 1. Suporta passagem de identityToken explícito
+ * 2. No navegador (Web), abre o popup oficial da Apple via signInWithPopup
+ * 3. No mobile/emulador sem credenciais da Apple, executa fallback simulado
  */
 export async function signInWithApple(options?: {
   identityToken?: string;
@@ -193,7 +221,24 @@ export async function signInWithApple(options?: {
     return chatUser;
   }
 
-  // Modo de login simulado do provedor Apple (para avaliação sem Apple Developer account)
+  // Fluxo oficial Web com popup
+  if (Platform.OS === 'web') {
+    const provider = new OAuthProvider('apple.com');
+    const userCredential = await signInWithPopup(auth, provider);
+    const user = userCredential.user;
+
+    const chatUser: ChatUser = {
+      uid: user.uid,
+      name: user.displayName || 'Usuário Apple',
+      email: user.email,
+      provider: 'apple',
+    };
+
+    await syncUserProfile(chatUser);
+    return chatUser;
+  }
+
+  // Modo de fallback para ambiente mobile/emulador
   const syntheticEmail = options?.email || `apple.user.${Date.now().toString().slice(-4)}@privaterelay.appleid.com`;
   const syntheticName = options?.name || 'Usuário Apple';
   const syntheticPass = 'AppleDevPass@2026';
