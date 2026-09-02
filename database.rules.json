@@ -1,0 +1,27 @@
+{
+  "rules": {
+    "users": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && auth.uid == $uid",
+        ".validate": "newData.hasChildren(['name', 'provider']) && (newData.child('provider').val() == 'password' || newData.child('provider').val() == 'google' || newData.child('provider').val() == 'apple')"
+      }
+    },
+    "conversations": {
+      ".read": "auth != null",
+      "$conversationId": {
+        ".write": "auth != null && (!data.exists() || data.child('participants/0').val() == auth.uid || data.child('participants/1').val() == auth.uid)",
+        ".validate": "newData.hasChildren(['id', 'participants', 'createdAt'])"
+      }
+    },
+    "messages": {
+      "$conversationId": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        "$messageId": {
+          ".validate": "newData.hasChildren(['id', 'conversationId', 'senderId', 'receiverId', 'text', 'createdAt']) && newData.child('senderId').val() == auth.uid"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "CP4 Chat Firebase",
+    "slug": "cp4-chat-firebase",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#000000"
+      }
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}
