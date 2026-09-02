@@ -1,28 +1,26 @@
-# 📱 CP4 --- React Native: Chat com Firebase (Authentication + Realtime Database)
+# CP4 --- React Native: Chat com Firebase (Authentication + Realtime Database)
 
 Aplicativo móvel de **chat em tempo real 1-para-1** desenvolvido em **React Native** com **Expo SDK 55** e **TypeScript**, integrado ao **Firebase Authentication** e ao **Firebase Realtime Database**.
 
 ---
 
-## 👥 Integrantes
+## Integrantes
 
-> ⚠️ **REGRA IMPORTANTE DA DISCIPLINA:** Caso o `README.md` não contenha o **NOME e RM de todos os integrantes**, o trabalho receberá **nota ZERO**. Quantidade máxima de integrantes: **5**.
-
-Preencha os dados dos integrantes do grupo abaixo:
-
-- **RM**: 12345 - **Nome**: Nome Completo do Aluno 1
-- **RM**: 23456 - **Nome**: Nome Completo do Aluno 2
-- **RM**: 34567 - **Nome**: Nome Completo do Aluno 3
-- **RM**: 45678 - **Nome**: Nome Completo do Aluno 4
-- **RM**: 56789 - **Nome**: Nome Completo do Aluno 5
+| Nome Completo | RM |
+| :--- | :--- |
+| **[Andrey Rodrigues Nagata]** | 555339 |
+| **[Henrique Soubhia]** | 554493 |
+| **[Oliver Kanai Trindade]** | 554954 |
+| **[Pedro Gutierre Cardoso de Oliveira]** | 555445 |
+| **[William Weile Feng]** | 555132 |
 
 ---
 
-## 🎯 Objetivo e Descrição
+## Objetivo e Descrição
 
 O aplicativo permite que usuários realizem autenticação por múltiplos provedores e troquem mensagens de forma instantânea e sincronizada em tempo real. Cada conversa é estritamente entre **duas pessoas** (1-para-1).
 
-### 🔀 Regra de Comunicação por Tipo de Autenticação
+### Regra de Comunicação por Tipo de Autenticação
 
 A comunicação entre os participantes é regida obrigatoriamente pela forma utilizada para autenticação:
 
@@ -45,7 +43,7 @@ A tela de contatos filtra automaticamente a listagem para apresentar **apenas co
 
 ---
 
-## 🎨 Identidade Visual e Design System
+## Identidade Visual e Design System
 
 Conforme as diretrizes especificadas para o projeto:
 1. **Tema Dark Mode**: Interface escura profunda em todas as telas.
@@ -59,7 +57,7 @@ Conforme as diretrizes especificadas para o projeto:
 
 ---
 
-## 🧰 Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 - **React Native** (0.83)
 - **Expo SDK 55**
@@ -74,7 +72,7 @@ Conforme as diretrizes especificadas para o projeto:
 
 ---
 
-## 🧱 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```text
 cp4-chat-firebase/
@@ -123,7 +121,7 @@ cp4-chat-firebase/
 
 ---
 
-## 🔥 Configuração do Firebase
+## Configuração do Firebase
 
 ### 1. Criar o Projeto no Firebase Console
 1. Acesse [Firebase Console](https://console.firebase.google.com/) e clique em **Adicionar projeto**.
@@ -186,7 +184,7 @@ EXPO_PUBLIC_FIREBASE_APP_ID=seu_app_id
 
 ---
 
-## 🚀 Como Executar o Projeto
+## Como Executar o Projeto
 
 ### Pré-requisitos
 - **Node.js** (versão 18 ou superior, recomendado 20+)
@@ -218,7 +216,7 @@ npx expo start
 
 ---
 
-## 📸 Screenshots da Aplicação
+## Screenshots da Aplicação
 
 > Substitua as imagens abaixo com os prints da execução do aplicativo:
 
@@ -228,7 +226,7 @@ npx expo start
 
 ---
 
-## 🧪 Verificação e Ausência de `any`
+## Verificação e Ausência de `any`
 
 O projeto segue tipagem estrita com TypeScript. Para verificar os tipos sem emitir código:
 
